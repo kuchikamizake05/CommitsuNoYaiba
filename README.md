@@ -1,20 +1,17 @@
+# Journey of CommitsuNoYaiba
+
+> My learning archive to rebuild independent coding skills and prepare for software engineering interviews.
+
 <p align="center">
-  <img src="assets/logo.png" alt="LeetCode Slayer — Commitsu No Yaiba" width="420" />
+  <img src="assets/logo.png" alt="LeetCode Slayer — Commitsu No Yaiba" width="360" />
 </p>
 
-# CommitsuNoYaiba
+---
 
-My learning archive for software engineering interviews: algorithms, backend fundamentals, and project deep dives.
+## About
 
-Think first. Code independently. Understand every solution.
+I've built projects with AI, but I want to get better at writing code and explaining my decisions without relying on it.
 
-Start with [the session guide](roadmap.md), then open [the tracker](tracker.md).
+This repo records my practice, mistakes, and reasoning—not just finished solutions.
 
-| Folder | Practice |
-| --- | --- |
-| [fundamentals](fundamentals/README.md) | Language basics and debugging |
-| [dsa](dsa/README.md) | Coding problems, tests, and retries |
-| [backend](backend/README.md) | HTTP, SQL, authentication, and transactions |
-| [design](design/README.md) | Small design decisions and trade-offs |
-| [projects](projects/README.md) | Explain and rebuild parts of your own projects |
-| [interviews](interviews/README.md) | Live coding, project defense, and work stories |
+Start with [the session guide](roadmap.md) and [the tracker](tracker.md).
