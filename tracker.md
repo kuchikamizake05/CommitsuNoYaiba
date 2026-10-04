@@ -2,6 +2,8 @@
 
 This file is the single progress record. Edit dates as YYYY-MM-DD. Empty cells mean no evidence recorded, not a failed assessment. Do not tick tasks in other files.
 
+Public LeetCode Accepted activity is synced separately in [leetcode/README.md](leetcode/README.md). See [sync instructions](leetcode/sync-guide.md). Accepted activity does not change the statuses or cold-retry evidence below.
+
 ## Problem queue
 
 | ID | Task | Status | First attempt | Help used | Cold retry 1 | Cold retry 2 | Next review | Evidence |

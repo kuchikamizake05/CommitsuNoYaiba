@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalize, merge, render, fetchRecent } from './leetcode-sync.mjs';
+import { normalize, merge, render, fetchRecent, sync } from './leetcode-sync.mjs';
+import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 
 const row = { id: '123', title: 'Two Sum', titleSlug: 'two-sum', timestamp: '1700000000' };
 test('validates and stores only public metadata', () => {
@@ -36,5 +39,25 @@ test('rejects invalid username, HTTP and GraphQL errors and missing profile', as
   await assert.rejects(fetchRecent('student', async () => ({ ok: false, status: 429 })));
   for (const body of [{ errors: [{ message: 'error' }] }, { data: { matchedUser: null } }, { data: { matchedUser: {}, recentAcSubmissionList: null } }]) {
     await assert.rejects(fetchRecent('student', async () => ({ ok: true, json: async () => body })));
+  }
+});
+test('sync persists metadata, is repeatable, and leaves history intact on API failure', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'commitsu-sync-test-'));
+  const response = (rows) => async () => ({ ok: true, json: async () => ({ data: { matchedUser: { username: 'kuchikamizake05' }, recentAcSubmissionList: rows } }) });
+  try {
+    const history = path.join(root, 'leetcode', 'accepted.json');
+    await sync(root, response([row]));
+    const initial = await readFile(history, 'utf8');
+    await sync(root, response([]));
+    assert.equal(await readFile(history, 'utf8'), initial);
+    await assert.rejects(sync(root, async () => { throw new Error('offline'); }));
+    assert.equal(await readFile(history, 'utf8'), initial);
+    assert.match(await readFile(path.join(root, 'leetcode', 'README.md'), 'utf8'), /Two Sum/);
+    await writeFile(history, '{invalid');
+    await assert.rejects(sync(root, response([])));
+    await writeFile(history, JSON.stringify({ username: 'other', submissions: [] }));
+    await assert.rejects(sync(root, response([])), /another profile/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
   }
 });
