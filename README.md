@@ -3,7 +3,7 @@
 > My learning archive to rebuild independent coding skills and prepare for software engineering interviews.
 
 <p align="center">
-  <img src="assets/logo.png" alt="LeetCode Slayer — Commitsu No Yaiba" width="360" />
+  <img src="assets/logo-transparent.png" alt="LeetCode Slayer — Commitsu No Yaiba" width="360" />
 </p>
 
 ---
