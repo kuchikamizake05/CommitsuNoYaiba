@@ -1,6 +1,6 @@
 # How to use this repository
 
-This is a practice system. The first cycle is an adjustable one-week experiment, not a deadline or a fixed interview curriculum.
+This is one practice path within Commitsu no Yaiba. The first cycle below focuses on interview preparation and is an adjustable one-week experiment, not a deadline or a fixed curriculum for every learning activity. Explore [.NET Dojo](dotnet-dojo/) for C# and backend learning.
 
 ## Tools
 
