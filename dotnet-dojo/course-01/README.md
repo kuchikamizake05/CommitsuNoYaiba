@@ -6,7 +6,7 @@ One evolving practice area for this course. Exercises are created with AI assist
 
 | Topic | Learning evidence |
 | --- | --- |
-| C# Introduction: Object-Oriented Programming | Reviewed — [example](klasemen-bola/) · [notes](oop-notes.md) |
+| C# Introduction: Object-Oriented Programming | Reviewed — [example](klasemen-bola/) · [notes](oop-notes.md) · [PR #1](https://github.com/kuchikamizake05/CommitsuNoYaiba/pull/1) |
 | C# Introduction Data Types (Part 1) | To document |
 | C# Introduction Data Types (Part 2) | To document |
 | MVC Pattern | Not started |
