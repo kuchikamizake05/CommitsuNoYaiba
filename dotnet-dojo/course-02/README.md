@@ -38,3 +38,14 @@ Get-Content dotnet-dojo/course-02/klub.json | ConvertFrom-Json
 Pekerjaan implementasi dijalankan dengan bantuan agent; pemahaman konsep
 dilatih melalui tanya jawab. Checklist Rocketversity perlu ditandai sendiri
 setelah sumber materinya benar-benar dipelajari.
+
+## Hasil praktik 11 November 2026
+
+- Commit fixture dan README dipisahkan melalui selective staging.
+- Konflik nyata muncul saat merge practice/02-persija, lalu diselesaikan dengan memilih Persib.
+- config.local.json masih muncul sebagai modified setelah ditambahkan ke .gitignore.
+- Setelah git rm --cached, file tetap ada di disk dan git check-ignore mengenalinya.
+- MR GitLab !1 dibuka, lalu Persebaya ditambahkan lewat commit lanjutan pada branch yang sama.
+- GitHub menerima branch yang sama untuk sinkronisasi kode; review dilakukan di GitLab.
+
+MR: https://gitlab.com/kuchikamizake05/CommitsuNoYaiba/-/merge_requests/1
