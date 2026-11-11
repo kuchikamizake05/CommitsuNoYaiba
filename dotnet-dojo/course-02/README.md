@@ -49,3 +49,9 @@ setelah sumber materinya benar-benar dipelajari.
 - GitHub menerima branch yang sama untuk sinkronisasi kode; review dilakukan di GitLab.
 
 MR: https://gitlab.com/kuchikamizake05/CommitsuNoYaiba/-/merge_requests/1
+
+## Praktik tambahan
+
+Lihat [hasil praktik tambahan](praktik-tambahan.md) dan [riwayat repo dummy](lab-history.txt).
+Operasi yang menulis ulang riwayat dicoba di repo dummy, sehingga commit yang
+sudah dipublikasikan pada MR ini tetap utuh.
