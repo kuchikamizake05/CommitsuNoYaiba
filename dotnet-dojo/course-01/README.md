@@ -7,14 +7,14 @@ One evolving practice area for this course. Exercises are created with AI assist
 | Topic | Learning evidence |
 | --- | --- |
 | C# Introduction: Object-Oriented Programming | Reviewed — [example](klasemen-bola/) · [notes](oop-notes.md) · [PR #1](https://github.com/kuchikamizake05/CommitsuNoYaiba/pull/1) |
-| C# Introduction Data Types (Part 1) | To document |
-| C# Introduction Data Types (Part 2) | To document |
-| MVC Pattern | Not started |
-| Routing | Not started |
-| Model | Not started |
-| Controller & Action | Not started |
-| Model Validation | Not started |
-| View using Razor | Not started |
-| Manage Package using NuGet Package Manager | Not started |
+| C# Introduction Data Types (Part 1) | Reviewed — [example](klasemen-bola/DataTypesDemo.cs) · [notes](data-types-notes.md) |
+| C# Introduction Data Types (Part 2) | Reviewed — [example](klasemen-bola/DataTypesDemo.cs) · [notes](data-types-notes.md) |
+| MVC Pattern | Reviewed — [web example](klasemen-web/) |
+| Routing | Reviewed — [web example](klasemen-web/Program.cs) |
+| Model | Reviewed — [web example](klasemen-web/Models/Klub.cs) |
+| Controller & Action | Reviewed — [web example](klasemen-web/Controllers/KlasemenController.cs) |
+| Model Validation | Reviewed — [web example](klasemen-web/Models/Klub.cs) |
+| View using Razor | Reviewed — [web example](klasemen-web/Views/Klasemen/Index.cshtml) |
+| Manage Package using NuGet Package Manager | Concept discussed; installing a package has not yet been practised |
 
 The course platform may track completion separately. Add a PR or commit link here after reviewing each topic.
