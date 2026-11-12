@@ -1,0 +1,19 @@
+@model KlasemenWeb.Models.Klub
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="utf-8" /><title>Latihan Klasemen</title></head>
+<body>
+    <h1>Latihan klasemen</h1>
+    @if (ViewData["Pesan"] is string pesan)
+    {
+        <p>@pesan</p>
+    }
+    <form asp-action="Index" method="post">
+        <div><label asp-for="Nama"></label> <input asp-for="Nama" /> <span asp-validation-for="Nama"></span></div>
+        <div><label asp-for="Poin"></label> <input asp-for="Poin" /> <span asp-validation-for="Poin"></span></div>
+        <button type="submit">Tampilkan</button>
+    </form>
+    <p>Contoh latihan: data tidak disimpan ke database.</p>
+</body>
+</html>

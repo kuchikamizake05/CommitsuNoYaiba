@@ -18,3 +18,5 @@ One evolving practice area for this course. Exercises are created with AI assist
 | Manage Package using NuGet Package Manager | Not started |
 
 The course platform may track completion separately. Add a PR or commit link here after reviewing each topic.
+
+MVC, routing, model, controller, validation, and Razor are demonstrated in the [web exercise](klasemen-web/); [PR #2](https://github.com/kuchikamizake05/CommitsuNoYaiba/pull/2) is ready for review. NuGet is described in the exercise README; no external package has been installed.
