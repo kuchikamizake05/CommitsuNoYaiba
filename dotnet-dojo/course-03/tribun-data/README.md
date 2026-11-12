@@ -40,6 +40,6 @@ Keterbatasan: tidak ada SQL Server lokal yang terverifikasi, tidak ada scaffold
 Database First, designer Model First, atau migration yang dieksekusi pada latihan ini.
 
 Audit dependency menemukan advisory pada SQLite native transitive 2.1.6;
-bundle dipin ke 2.1.11 untuk memperbarui library tersebut. Build setelah update
+bundle akhirnya dipin ke 3.0.5 (native SQLite 3.53.4). Audit terakhir tidak menemukan paket rentan pada sumber advisory saat pemeriksaan. Build setelah update
 lolos. Enam pemeriksaan runtime lolos sebelum update; eksekusi ulang build
 terbaru diblokir Windows Application Control, sehingga belum terverifikasi ulang.
