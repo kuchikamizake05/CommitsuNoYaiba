@@ -12,6 +12,9 @@ Person pelatih = new Coach("Budi", "A");
 pemain.Introduce();
 pelatih.Introduce();
 
+DataTypesDemo.ShowPartOne();
+DataTypesDemo.ShowPartTwo();
+
 class FootballClub
 {
     public string Name { get; }
