@@ -1,0 +1,12 @@
+* 2bebfca lab: remote update
+* ceeaf3f lab: squash feature
+| * cfe6c61 lab: feature for rebase
+|/
+* 13cdebb lab: advance main
+* 60693c3 lab: rename club file
+* 4991a4c lab: add Persebaya
+| * eb2993b lab: add Persebaya
+|/
+* 9d6e161 Revert "lab: points to revert"
+* 80c626f lab: points to revert
+* b8280a5 lab: initial club
