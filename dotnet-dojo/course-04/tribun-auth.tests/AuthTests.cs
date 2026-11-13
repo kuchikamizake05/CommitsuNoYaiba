@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 public sealed class AuthFactory : WebApplicationFactory<Program>
@@ -121,5 +122,16 @@ public sealed class AuthTests : IClassFixture<AuthFactory>
             signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(factory.SigningKey)), SecurityAlgorithms.HmacSha256));
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", new JwtSecurityTokenHandler().WriteToken(token));
         Assert.Equal(HttpStatusCode.Unauthorized, (await client.GetAsync("/profil")).StatusCode);
+    }
+
+    [Fact]
+    public void RegisteredLifetimesMatchTheirResponsibilities()
+    {
+        using var firstScope = factory.Services.CreateScope();
+        using var secondScope = factory.Services.CreateScope();
+        Assert.Same(firstScope.ServiceProvider.GetRequiredService<DemoUserStore>(),
+            secondScope.ServiceProvider.GetRequiredService<DemoUserStore>());
+        Assert.NotSame(firstScope.ServiceProvider.GetRequiredService<TokenService>(),
+            firstScope.ServiceProvider.GetRequiredService<TokenService>());
     }
 }

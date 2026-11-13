@@ -1,33 +1,12 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-const string issuer = "tribun-auth";
-const string audience = "tribun-client";
-var keyText = builder.Configuration["Jwt:Key"];
-if (string.IsNullOrWhiteSpace(keyText) || Encoding.UTF8.GetByteCount(keyText) < 32)
-    throw new InvalidOperationException("Set Jwt__Key to a random signing key of at least 32 bytes.");
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyText));
-
-var hasher = new PasswordHasher<DemoUser>();
-var users = new Dictionary<string, DemoUser>();
-foreach (var (name, role, setting) in new[]
-{
-    ("pemain", "Player", "Demo:PlayerPassword"),
-    ("admin", "Admin", "Demo:AdminPassword")
-})
-{
-    var password = builder.Configuration[setting];
-    if (string.IsNullOrWhiteSpace(password) || password.Length < 12)
-        throw new InvalidOperationException($"Set {setting.Replace(":", "__")} to at least 12 characters.");
-    var user = new DemoUser(name, role);
-    user.PasswordHash = hasher.HashPassword(user, password);
-    users.Add(name, user);
-}
+var tokenSettings = new TokenSettings(builder.Configuration);
+builder.Services.AddSingleton(tokenSettings);
+builder.Services.AddSingleton<DemoUserStore>();
+builder.Services.AddTransient<TokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -35,11 +14,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = signingKey,
+        IssuerSigningKey = tokenSettings.SigningKey,
         ValidateIssuer = true,
-        ValidIssuer = issuer,
+        ValidIssuer = TokenSettings.Issuer,
         ValidateAudience = true,
-        ValidAudience = audience,
+        ValidAudience = TokenSettings.Audience,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero,
         ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256 },
@@ -49,23 +28,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization(options => options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin")));
 var app = builder.Build();
+// Validate the demo credentials at startup, rather than failing on the first login.
+_ = app.Services.GetRequiredService<DemoUserStore>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapPost("/login", (LoginRequest request) =>
+app.MapPost("/login", (LoginRequest request, DemoUserStore users, TokenService tokens) =>
 {
     if (string.IsNullOrWhiteSpace(request.Username) || request.Username.Length > 100 ||
         string.IsNullOrWhiteSpace(request.Password) || request.Password.Length > 256)
         return Results.BadRequest(new { message = "Username dan password wajib diisi dengan panjang yang sesuai." });
-    if (!users.TryGetValue(request.Username, out var user) ||
-        hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
+    var user = users.VerifyCredentials(request.Username, request.Password);
+    if (user is null)
         return Results.Unauthorized();
-
-    var token = new JwtSecurityToken(issuer, audience,
-        new[] { new Claim("sub", user.Username), new Claim("role", user.Role), new Claim("jti", Guid.NewGuid().ToString()) },
-        expires: DateTime.UtcNow.AddMinutes(15),
-        signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
-    return Results.Ok(new { accessToken = new JwtSecurityTokenHandler().WriteToken(token), tokenType = "Bearer", expiresIn = 900 });
+    return Results.Ok(tokens.CreateToken(user));
 });
 
 app.MapGet("/profil", (ClaimsPrincipal user) => Results.Ok(new
@@ -82,10 +58,4 @@ app.MapPost("/admin/pertandingan", () => Results.Ok(new
 app.Run();
 
 public record LoginRequest(string? Username, string? Password);
-public sealed class DemoUser(string username, string role)
-{
-    public string Username { get; } = username;
-    public string Role { get; } = role;
-    public string PasswordHash { get; set; } = "";
-}
 public partial class Program { }
