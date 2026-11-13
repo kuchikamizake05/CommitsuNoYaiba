@@ -3,22 +3,31 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 public sealed class AuthFactory : WebApplicationFactory<Program>
 {
     public string PlayerPassword { get; } = Convert.ToBase64String(RandomNumberGenerator.GetBytes(24));
     public string AdminPassword { get; } = Convert.ToBase64String(RandomNumberGenerator.GetBytes(24));
-    protected override void ConfigureWebHost(IWebHostBuilder builder) => builder.ConfigureAppConfiguration((_, config) =>
-        config.AddInMemoryCollection(new Dictionary<string, string?>
+    public string SigningKey { get; } = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        builder.ConfigureHostConfiguration(config => config.AddInMemoryCollection(new Dictionary<string, string?>
         {
-            ["Jwt:Key"] = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48)),
+            ["Jwt:Key"] = SigningKey,
             ["Demo:PlayerPassword"] = PlayerPassword,
             ["Demo:AdminPassword"] = AdminPassword
         }));
+        return base.CreateHost(builder);
+    }
 }
 
 public sealed class AuthTests : IClassFixture<AuthFactory>
@@ -96,6 +105,21 @@ public sealed class AuthTests : IClassFixture<AuthFactory>
         var parts = (await Login(client, "pemain", factory.PlayerPassword)).Split('.');
         parts[2] = (parts[2][0] == 'A' ? "B" : "A") + parts[2][1..];
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", string.Join('.', parts));
+        Assert.Equal(HttpStatusCode.Unauthorized, (await client.GetAsync("/profil")).StatusCode);
+    }
+
+    [Theory]
+    [InlineData("wrong-issuer", "tribun-client", false)]
+    [InlineData("tribun-auth", "wrong-audience", false)]
+    [InlineData("tribun-auth", "tribun-client", true)]
+    public async Task InvalidTokenClaimsReturn401(string issuer, string audience, bool expired)
+    {
+        using var client = factory.CreateClient();
+        var token = new JwtSecurityToken(issuer, audience,
+            new[] { new Claim("sub", "admin"), new Claim("role", "Admin") },
+            expires: DateTime.UtcNow.AddMinutes(expired ? -10 : 10),
+            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(factory.SigningKey)), SecurityAlgorithms.HmacSha256));
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", new JwtSecurityTokenHandler().WriteToken(token));
         Assert.Equal(HttpStatusCode.Unauthorized, (await client.GetAsync("/profil")).StatusCode);
     }
 }
